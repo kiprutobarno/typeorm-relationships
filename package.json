@@ -1,0 +1,22 @@
+{
+  "name": "typeorm-relationships",
+  "version": "1.0.0",
+  "description": "Demonstration of typeorm relationships",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec ts-node ./src/server.ts"
+  },
+  "repository": "https://github.com/ywalakamar/typeorm-relationships.git",
+  "author": "ywalakamar <barxwells@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2"
+  }
+}
