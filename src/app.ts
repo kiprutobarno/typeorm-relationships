@@ -1,14 +1,15 @@
 import express, { Application } from "express";
 import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import { config } from "./Utils/config";
+import Controller from "./interfaces/controller.interface";
 
 class App {
   public app: Application;
-  public port: number;
 
-  constructor(controllers, port) {
+  constructor(controllers: Controller[]) {
     this.app = express();
-    this.port = port;
-
+    this.dbConnection();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
   }
@@ -17,15 +18,22 @@ class App {
     this.app.use(bodyParser.json());
   }
 
-  private initializeControllers(controllers) {
+  private initializeControllers(controllers: Controller[]) {
     controllers.map(controller => {
       this.app.use("/", controller.router);
     });
   }
 
+  private dbConnection() {
+    mongoose.connect(config.DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+  }
+
   public listen() {
-    this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`);
+    this.app.listen(config.PORT, () => {
+      console.log(`App listening on the port ${config.PORT}`);
     });
   }
 }
