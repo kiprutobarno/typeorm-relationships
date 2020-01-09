@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import { config } from "./Utils/config";
 import Controller from "./interfaces/controller.interface";
+import errorMiddleware from "./middleware/error.middleware";
 
 class App {
   public app: Application;
@@ -12,10 +13,15 @@ class App {
     this.dbConnection();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
+    this.initializeErrorHandling();
   }
 
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
   }
 
   private initializeControllers(controllers: Controller[]) {
