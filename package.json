@@ -1,6 +1,6 @@
 {
   "name": "typeorm-relationships",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Demonstration of typeorm relationships",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,10 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.6",
     "nodemon": "^2.0.2",
+    "pg": "^7.17.1",
+    "reflect-metadata": "^0.1.13",
     "ts-node": "^8.5.4",
+    "typeorm": "^0.2.22",
     "typescript": "^3.7.4"
   },
   "devDependencies": {

@@ -1,14 +1,18 @@
+import { createConnection } from "typeorm";
+import "reflect-metadata";
 import App from "./app";
 import PostsController from "./posts/posts.controller";
-import AuthenticationController from "./authentication/authentication.controller";
-import UserController from "./users/users.controller";
-import ReportController from "./report/report.controller";
 
-const app = new App([
-  new PostsController(),
-  new AuthenticationController(),
-  new UserController(),
-  new ReportController()
-]);
+async function init() {
+  try {
+    await createConnection();
+  } catch (error) {
+    console.log("Error while connecting to the database", error);
+    return error;
+  }
+  const app = new App([new PostsController()]);
 
-app.listen();
+  app.listen();
+}
+
+init();
