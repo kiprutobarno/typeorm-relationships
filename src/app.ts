@@ -20,12 +20,6 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
-    // this.app.use(cookieParser());
-    // this.app.use(cookie())
-  }
-
-  private initializeErrorHandling() {
-    this.app.use(errorMiddleware);
   }
 
   private initializeErrorHandling() {
