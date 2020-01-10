@@ -12,9 +12,10 @@ import TokenData from "../interfaces/tokenData.interface";
 import User from "../users/user.interface";
 import DataStoredInToken from "../interfaces/dataStoredInToken";
 import { config } from "../Utils/config";
+import { V1_BASE_URL } from "../Utils/constants";
 
 class AuthenticationController implements Controller {
-  public path = "/auth";
+  public path = `${V1_BASE_URL}/auth`;
   public router = Router();
   private user = userModel;
 
