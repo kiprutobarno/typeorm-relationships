@@ -5,6 +5,7 @@ import HttpException from "../exceptions/HttpException";
 import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
 import { V2_BASE_URL } from "../Utils/constants";
+import PostNotFoundException from "../exceptions/PostNotFoundException";
 
 class PostsController {
   public path = `${V2_BASE_URL}/posts`;
@@ -21,6 +22,14 @@ class PostsController {
       validationMiddleware(CreatePostDto),
       this.createPost
     );
+    this.router.get(this.path, this.getPosts);
+    this.router.get(`${this.path}/:id`, this.getPost);
+    this.router.patch(
+      `${this.path}/:id`,
+      validationMiddleware(CreatePostDto, true),
+      this.updatePost
+    );
+    this.router.delete(`${this.path}/:id`, this.deletePost);
   }
 
   createPost = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,6 +40,49 @@ class PostsController {
       res.status(201).send({ status: 201, message: "Created", post: feedback });
     } else {
       next(new HttpException(404, "An error ocurred"));
+    }
+  };
+
+  getPosts = async (req: Request, res: Response, next: NextFunction) => {
+    const feedback = await this.postResitory.find();
+    if (feedback) {
+      res
+        .status(200)
+        .send({ status: 200, message: "Success", posts: feedback });
+    } else {
+      next(new HttpException(404, "An error ocurred"));
+    }
+  };
+
+  getPost = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const feedback = await this.postResitory.findOne(id);
+    if (feedback) {
+      res.status(200).send({ status: 200, message: "Success", post: feedback });
+    } else {
+      next(new PostNotFoundException(id));
+    }
+  };
+
+  updatePost = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const data: Post = req.body;
+    await this.postResitory.update(id, data);
+    const feedback = await this.postResitory.findOne(id);
+    if (feedback) {
+      res.status(200).send({ status: 200, message: "Success", post: feedback });
+    } else {
+      next(new PostNotFoundException(id));
+    }
+  };
+
+  deletePost = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const feedback = await this.postResitory.delete(id);
+    if (feedback.raw[1]) {
+      res.status(200).send({ status: 200, message: "Success", post: feedback });
+    } else {
+      next(new PostNotFoundException(id));
     }
   };
 }
