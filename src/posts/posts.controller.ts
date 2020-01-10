@@ -5,7 +5,8 @@ import HttpException from "../exceptions/HttpException";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
 import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
-
+import authMiddleware from "../middleware/auth.middleware";
+import RequestWithUser from "../interfaces/requestWithUser.interface";
 class PostsController {
   public path = "/posts";
   public router = Router();
@@ -17,21 +18,24 @@ class PostsController {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAllPosts);
-    this.router.post(
-      this.path,
-      validationMiddleware(CreatePostDto),
-      this.createPost
-    );
     this.router.get(`${this.path}/:id`, this.getPost);
-    this.router.patch(
-      `${this.path}/:id`,
-      validationMiddleware(CreatePostDto),
-      this.updatePost
-    );
-    this.router.delete(`${this.path}/:id`, this.deletePost);
+    this.router
+      .all(`${this.path}/*`, authMiddleware)
+      .post(
+        this.path,
+        authMiddleware,
+        validationMiddleware(CreatePostDto),
+        this.createPost
+      )
+      .patch(
+        `${this.path}/:id`,
+        validationMiddleware(CreatePostDto, true),
+        this.updatePost
+      )
+      .delete(`${this.path}/:id`, this.deletePost);
   }
 
-  getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
+  getAllPosts = async (_req: Request, res: Response, next: NextFunction) => {
     let feedback = await this.post.find();
     if (feedback) {
       res
@@ -41,12 +45,18 @@ class PostsController {
       next(new HttpException(404, "Post not found"));
     }
   };
+  
+  createPost = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const data: CreatePostDto = req.body;
+    
+    const createdPost = new this.post({ ...data, authorId: req.user._id });
 
-  createPost = async (req: Request, res: Response, next: NextFunction) => {
-    const data: Post = req.body;
-    const post = new postModel(data);
-    const feedback = await post.save();
-    if (post) {
+    const feedback = await createdPost.save();
+    if (feedback) {
       res.status(201).send({ status: 201, message: "Created", post: feedback });
     } else {
       next(new HttpException(404, "An error ocurred"));
