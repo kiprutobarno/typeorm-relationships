@@ -7,6 +7,7 @@ import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
 import authMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser.interface";
+
 class PostsController {
   public path = "/posts";
   public router = Router();
@@ -45,17 +46,19 @@ class PostsController {
       next(new HttpException(404, "Post not found"));
     }
   };
-  
+
   createPost = async (
     req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) => {
     const data: CreatePostDto = req.body;
-    
-    const createdPost = new this.post({ ...data, authorId: req.user._id });
+
+    const createdPost = new this.post({ ...data, author: req.user._id });
 
     const feedback = await createdPost.save();
+    //replace author id with actual author data using execPopulate() function
+    await feedback.populate("author", "name").execPopulate();
     if (feedback) {
       res.status(201).send({ status: 201, message: "Created", post: feedback });
     } else {
