@@ -13,6 +13,7 @@ async function init() {
   const app = new App([new PostsController()]);
 
   app.listen();
+  return app;
 }
 
 init();
