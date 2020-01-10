@@ -1,9 +1,7 @@
 import bcrypt from "bcrypt";
-import cookie from "cookie";
 import { Request, Response, NextFunction, Router } from "express";
 import Controller from "../interfaces/controller.interface";
 import validationMiddleware from "../middleware/validation.middleware";
-import CreatePostDto from "../posts/post.dto";
 import UserWithThatEmailAlreadyExistsException from "../exceptions/UserWithThatEmailAlreadyExistsException";
 import LogInDto from "./login.dto";
 import WrongCredentialsException from "../exceptions/WrongCredentialsException";
@@ -14,7 +12,6 @@ import TokenData from "../interfaces/tokenData.interface";
 import User from "../users/user.interface";
 import DataStoredInToken from "../interfaces/dataStoredInToken";
 import { config } from "../Utils/config";
-// import cookieParser from "cookie-parser";
 
 class AuthenticationController implements Controller {
   public path = "/auth";
@@ -36,6 +33,7 @@ class AuthenticationController implements Controller {
       validationMiddleware(LogInDto),
       this.login
     );
+    this.router.post(`${this.path}/logout`, this.logout);
   }
 
   registration = async (req: Request, res: Response, next: NextFunction) => {
@@ -49,8 +47,6 @@ class AuthenticationController implements Controller {
         password: hashedPassword
       });
       user.password = undefined;
-      const tokenData = this.createToken(user);
-      res.setHeader("Set-Cookie", [this.createCookie(tokenData)]);
       res.status(201).send({ status: 201, message: "Success", user: user });
     }
   };
@@ -71,6 +67,12 @@ class AuthenticationController implements Controller {
         next(new WrongCredentialsException());
       }
     }
+  };
+
+  logout = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      console.log(req);
+    } catch (error) {}
   };
 
   private createToken(user: User): TokenData {
