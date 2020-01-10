@@ -8,9 +8,10 @@ import CreatePostDto from "./post.dto";
 import authMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser.interface";
 import userModel from "../users/user.models";
+import { V1_BASE_URL } from "../Utils/constants";
 
 class PostsController {
-  public path = "/posts";
+  public path = `${V1_BASE_URL}/posts`;
   public router = Router();
   private post = postModel;
   private user = userModel;

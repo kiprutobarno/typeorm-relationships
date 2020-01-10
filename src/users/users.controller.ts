@@ -5,9 +5,10 @@ import RequestWithUser from "../interfaces/requestWithUser.interface";
 import NotAuthorizedException from "../exceptions/NotAuthorizedException";
 import authMiddleware from "../middleware/auth.middleware";
 import userModel from "./user.models";
+import { V1_BASE_URL } from "../Utils/constants";
 
 class UserController implements Controller {
-  public path = "/users";
+  public path = `${V1_BASE_URL}/users`;
   public router = Router();
   private post = postModel;
   private user = userModel;

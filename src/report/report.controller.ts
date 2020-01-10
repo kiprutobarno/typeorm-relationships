@@ -1,9 +1,10 @@
 import Controller from "../interfaces/controller.interface";
 import { Router, Request, Response, NextFunction } from "express";
 import userModel from "../users/user.models";
+import { V1_BASE_URL } from "../Utils/constants";
 
 class ReportController implements Controller {
-  public path = "/report";
+  public path = `${V1_BASE_URL}/report`;
   public router = Router();
   private user = userModel;
 
