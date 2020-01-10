@@ -7,11 +7,13 @@ import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
 import authMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser.interface";
+import userModel from "../users/user.models";
 
 class PostsController {
   public path = "/posts";
   public router = Router();
   private post = postModel;
+  private user = userModel;
 
   constructor() {
     this.initializeRoutes();
@@ -53,12 +55,13 @@ class PostsController {
     next: NextFunction
   ) => {
     const data: CreatePostDto = req.body;
-
-    const createdPost = new this.post({ ...data, author: req.user._id });
-
+    const createdPost = new this.post({ ...data, authors: [req.user._id] });
+    const user = await this.user.findById(req.user._id);
+    user["posts"] = [...user["posts"], createdPost._id];
+    await user.save();
     const feedback = await createdPost.save();
     //replace author id with actual author data using execPopulate() function
-    await feedback.populate("author", "name").execPopulate();
+    await feedback.populate("authors", "-password").execPopulate();
     if (feedback) {
       res.status(201).send({ status: 201, message: "Created", post: feedback });
     } else {
