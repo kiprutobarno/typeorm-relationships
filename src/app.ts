@@ -28,6 +28,10 @@ class App {
     this.app.use(errorMiddleware);
   }
 
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
+  }
+
   private initializeControllers(controllers: Controller[]) {
     controllers.map(controller => {
       this.app.use("/", controller.router);

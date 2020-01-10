@@ -7,7 +7,6 @@ import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
 import authMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser.interface";
-
 class PostsController {
   public path = "/posts";
   public router = Router();
@@ -46,7 +45,7 @@ class PostsController {
       next(new HttpException(404, "Post not found"));
     }
   };
-
+  
   createPost = async (
     req: RequestWithUser,
     res: Response,
