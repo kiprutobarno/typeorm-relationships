@@ -5,11 +5,13 @@ const addressSchema = new Schema({
   city: String,
   street: String
 });
+
 const userSchema = new Schema({
   name: String,
   address: addressSchema,
   email: String,
-  password: String
+  password: String,
+  posts: [{ ref: "Post", type: Schema.Types.ObjectId }]
 });
 
 const userModel = model<User & Document>("User", userSchema);
