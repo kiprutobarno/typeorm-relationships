@@ -55,7 +55,9 @@ class PostsController {
   };
 
   getPosts = async (req: Request, res: Response, next: NextFunction) => {
-    const feedback = await this.postResitory.find();
+    const feedback = await this.postResitory.find({
+      relations: ["categories"]
+    });
     if (feedback) {
       res
         .status(200)
@@ -67,7 +69,9 @@ class PostsController {
 
   getPost = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const feedback = await this.postResitory.findOne(id);
+    const feedback = await this.postResitory.findOne(id, {
+      relations: ["categories"]
+    });
     if (feedback) {
       res.status(200).send({ status: 200, message: "Success", post: feedback });
     } else {
