@@ -6,12 +6,14 @@ module.exports = {
   port: config.DB_PORT,
   username: config.DB_USER,
   password: config.DB_PASSWORD,
-  entities: ["dist/entities/*.js"],
+  entities: ["dist/entity/*.js"],
+  migrations: ["dist/migration/*.js"],
   logging: true,
   synchronize: false,
   migrationsRun: true,
   cli: {
-    entitiesDir: "src/entities"
+    migrationsDir: "src/migration",
+    entitiesDir: "src/entity"
   },
   extra: {
     connectionLimit: 20

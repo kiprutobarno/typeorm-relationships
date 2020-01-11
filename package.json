@@ -4,7 +4,8 @@
   "description": "Demonstration of typeorm relationships",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node ./src/server.ts"
+    "start": "nodemon --exec ts-node ./src/server.ts",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.ts"
   },
   "repository": "https://github.com/ywalakamar/typeorm-relationships.git",
   "author": "ywalakamar <barxwells@gmail.com>",

@@ -4,15 +4,17 @@ import AuthenticationTokenMissingException from "../exceptions/AuthenticationTok
 import WrongAuthenticationTokenException from "../exceptions/WrongAuhenticationTokenException";
 import DataStoredInToken from "../interfaces/dataStoredInToken";
 import RequestWithUser from "../interfaces/requestWithUser.interface";
-import userModel from "../users/user.models";
 import { config } from "../Utils/config";
 import ExpiredAuthenticationTokenException from "../exceptions/ExpiredAuthenticationTokenException";
+import User from "../entity/user";
+import { getRepository } from "typeorm";
 
 async function authMiddleware(
   req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) {
+  const userRepository = getRepository(User);
   const auth = req.headers["authorization"];
   if (typeof auth === "undefined") {
     next(new AuthenticationTokenMissingException());
@@ -21,8 +23,8 @@ async function authMiddleware(
     const secret = config.SECRET;
     try {
       const decode = jwt.verify(token, secret) as DataStoredInToken;
-      const id = decode._id;
-      const user = await userModel.findById(id);
+      const id = decode.id;
+      const user = await userRepository.findOne(id);
       if (user) {
         req.user = user;
         next();
@@ -34,4 +36,5 @@ async function authMiddleware(
     }
   }
 }
+
 export default authMiddleware;
