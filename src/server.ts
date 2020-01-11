@@ -5,6 +5,7 @@ import PostsController from "./posts/posts.controller";
 import AuthenticationController from "./authentication/authentication.controller";
 import AddressController from "./addresses/address.controller";
 import UserController from "./users/users.controller";
+import CategoryController from './categories/category.controller';
 
 async function init() {
   try {
@@ -17,7 +18,8 @@ async function init() {
     new PostsController(),
     new AuthenticationController(),
     new AddressController(),
-    new UserController()
+    new UserController(),
+    new CategoryController()
   ]);
 
   app.listen();
