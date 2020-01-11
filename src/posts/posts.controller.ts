@@ -7,6 +7,7 @@ import CreatePostDto from "./post.dto";
 import { V2_BASE_URL } from "../Utils/constants";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
 import authMiddleware from "../middleware/auth.middleware";
+import RequestWithUser from "../interfaces/requestWithUser.interface";
 
 class PostsController {
   public path = `${V2_BASE_URL}/posts`;
@@ -35,9 +36,16 @@ class PostsController {
     this.router.delete(`${this.path}/:id`, this.deletePost);
   }
 
-  createPost = async (req: Request, res: Response, next: NextFunction) => {
+  createPost = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
     const data: CreatePostDto = req.body;
-    const post = this.postResitory.create(data);
+    const post = this.postResitory.create({
+      ...data,
+      author: req.user
+    });
     const feedback = await this.postResitory.save(post);
     if (feedback) {
       res.status(201).send({ status: 201, message: "Created", post: feedback });

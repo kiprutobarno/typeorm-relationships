@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
 import Address from "../entity/address";
+import Post from "../entity/posts";
 
 @Entity()
 class User {
@@ -31,6 +33,12 @@ class User {
   )
   @JoinColumn()
   public address: Address;
+
+  @OneToMany(
+    () => Post,
+    (post: Post) => post.author
+  )
+  public posts: Post[];
 }
 
 export default User;
