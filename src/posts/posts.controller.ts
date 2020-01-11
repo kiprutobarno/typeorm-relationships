@@ -1,11 +1,12 @@
 import { Router, Response, Request, NextFunction } from "express";
 import { getRepository } from "typeorm";
-import Post from "../entities/posts";
+import Post from "../entity/posts";
 import HttpException from "../exceptions/HttpException";
 import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
 import { V2_BASE_URL } from "../Utils/constants";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
+import authMiddleware from "../middleware/auth.middleware";
 
 class PostsController {
   public path = `${V2_BASE_URL}/posts`;
@@ -19,6 +20,7 @@ class PostsController {
   private initializeRoutes() {
     this.router.post(
       this.path,
+      authMiddleware,
       validationMiddleware(CreatePostDto),
       this.createPost
     );
@@ -26,6 +28,7 @@ class PostsController {
     this.router.get(`${this.path}/:id`, this.getPost);
     this.router.patch(
       `${this.path}/:id`,
+      authMiddleware,
       validationMiddleware(CreatePostDto, true),
       this.updatePost
     );
