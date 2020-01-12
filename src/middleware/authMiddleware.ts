@@ -15,25 +15,23 @@ async function authMiddleware(
   next: NextFunction
 ) {
   const userRepository = getRepository(User);
-  const auth = req.headers["authorization"];
-  if (typeof auth === "undefined") {
-    next(new AuthenticationTokenMissingException());
-  } else {
-    const token = auth.replace("Bearer ", "");
-    const secret = config.SECRET;
-    try {
-      const decode = jwt.verify(token, secret) as DataStoredInToken;
-      const id = decode.id;
-      const user = await userRepository.findOne(id);
-      if (user) {
-        req.user = user;
-        next();
-      } else {
-        next(new WrongAuthenticationTokenException());
-      }
-    } catch (error) {
-      next(new ExpiredAuthenticationTokenException());
+  const token = req.cookies.token || "";
+  try {
+    if (!token) {
+      next(new AuthenticationTokenMissingException());
     }
+    const decode = jwt.verify(token, config.SECRET) as DataStoredInToken;
+    console.log(decode);
+    const id = decode.id;
+    const user = await userRepository.findOne(id);
+    if (user) {
+      req.user = user;
+      next();
+    } else {
+      next(new WrongAuthenticationTokenException());
+    }
+  } catch (error) {
+    next(new ExpiredAuthenticationTokenException());
   }
 }
 

@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import { config } from "./Utils/config";
 import Controller from "./interfaces/controllerInterface";
 import errorMiddleware from "./middleware/errorMiddleware";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 class App {
   public app: Application;
@@ -16,6 +18,8 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
+    this.app.use(cors());
+    this.app.use(cookieParser());
   }
 
   private initializeErrorHandling() {

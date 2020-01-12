@@ -66,13 +66,25 @@ class AuthenticationController implements Controller {
     if (feedback) {
       const isPasswordMatching = await bcrypt.compare(data.password, password);
       if (isPasswordMatching) {
-        const token = this.createToken(feedback).token;
-        res.status(200).send({ status: 200, message: "Success", token: token });
+        const tokenData = this.createToken(feedback);
+        console.log(tokenData);
+        this.createCookie(res, tokenData);
+        res
+          .status(200)
+          .send({ status: 200, message: "Success", token: tokenData.token });
       } else {
         next(new WrongCredentialsException());
       }
     }
   };
+
+  private createCookie(res, tokenData: TokenData) {
+    return res.cookie("token", tokenData.token, {
+      secure: false,
+      httpOnly: true,
+      expires: new Date(Date.now() + tokenData.expiresIn)
+    });
+  }
 
   private createToken(user: User): TokenData {
     const expiresIn = 60 * 60;
@@ -80,6 +92,7 @@ class AuthenticationController implements Controller {
     const dataStoredInToken: DataStoredInToken = {
       id: user.id
     };
+
     return {
       expiresIn,
       token: jwt.sign(dataStoredInToken, secret, { expiresIn })
