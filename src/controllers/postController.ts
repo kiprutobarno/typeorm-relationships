@@ -12,7 +12,7 @@ import RequestWithUser from "../interfaces/requestWithUserInterface";
 class PostsController {
   public path = `${V2_BASE_URL}/posts`;
   public router = Router();
-  private postResitory = getRepository(Post);
+  private postRepository = getRepository(Post);
 
   constructor() {
     this.initializeRoutes();
@@ -42,11 +42,11 @@ class PostsController {
     next: NextFunction
   ) => {
     const data: CreatePostDto = req.body;
-    const post = this.postResitory.create({
+    const post = this.postRepository.create({
       ...data,
       author: req.user
     });
-    const feedback = await this.postResitory.save(post);
+    const feedback = await this.postRepository.save(post);
     if (feedback) {
       res.status(201).send({ status: 201, message: "Created", post: feedback });
     } else {
@@ -55,7 +55,7 @@ class PostsController {
   };
 
   getPosts = async (req: Request, res: Response, next: NextFunction) => {
-    const feedback = await this.postResitory.find({
+    const feedback = await this.postRepository.find({
       relations: ["categories"]
     });
     if (feedback) {
@@ -69,7 +69,7 @@ class PostsController {
 
   getPost = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const feedback = await this.postResitory.findOne(id, {
+    const feedback = await this.postRepository.findOne(id, {
       relations: ["categories"]
     });
     if (feedback) {
@@ -82,8 +82,8 @@ class PostsController {
   updatePost = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const data: Post = req.body;
-    await this.postResitory.update(id, data);
-    const feedback = await this.postResitory.findOne(id);
+    await this.postRepository.update(id, data);
+    const feedback = await this.postRepository.findOne(id);
     if (feedback) {
       res.status(200).send({ status: 200, message: "Success", post: feedback });
     } else {
@@ -93,7 +93,7 @@ class PostsController {
 
   deletePost = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const feedback = await this.postResitory.delete(id);
+    const feedback = await this.postRepository.delete(id);
     if (feedback.raw[1]) {
       res.status(200).send({ status: 200, message: "Success", post: feedback });
     } else {
