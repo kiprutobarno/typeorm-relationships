@@ -21,7 +21,6 @@ async function authMiddleware(
       next(new AuthenticationTokenMissingException());
     }
     const decode = jwt.verify(token, config.SECRET) as DataStoredInToken;
-    console.log(decode);
     const id = decode.id;
     const user = await userRepository.findOne(id);
     if (user) {

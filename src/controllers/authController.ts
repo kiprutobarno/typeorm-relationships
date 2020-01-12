@@ -56,10 +56,7 @@ class AuthenticationController implements Controller {
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     const data: LogInDto = req.body;
-    const feedback = await this.userRepository
-      .createQueryBuilder()
-      .addSelect("password")
-      .getRawOne();
+    const feedback = await this.userRepository.findOne({ email: data.email });
 
     const { password } = feedback;
 
@@ -67,7 +64,6 @@ class AuthenticationController implements Controller {
       const isPasswordMatching = await bcrypt.compare(data.password, password);
       if (isPasswordMatching) {
         const tokenData = this.createToken(feedback);
-        console.log(tokenData);
         this.createCookie(res, tokenData);
         res
           .status(200)
@@ -78,11 +74,11 @@ class AuthenticationController implements Controller {
     }
   };
 
-  private createCookie(res, tokenData: TokenData) {
-    return res.cookie("token", tokenData.token, {
+  private createCookie(res, data: TokenData) {
+    return res.cookie("token", data.token, {
+      expiresOn: new Date(Date.now() + data.expiresIn),
       secure: false,
-      httpOnly: true,
-      expires: new Date(Date.now() + tokenData.expiresIn)
+      httpOnly: true
     });
   }
 
@@ -90,9 +86,9 @@ class AuthenticationController implements Controller {
     const expiresIn = 60 * 60;
     const secret = config.SECRET;
     const dataStoredInToken: DataStoredInToken = {
-      id: user.id
+      id: user.id,
+      email: user.email
     };
-
     return {
       expiresIn,
       token: jwt.sign(dataStoredInToken, secret, { expiresIn })
