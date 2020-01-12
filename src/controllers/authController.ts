@@ -34,6 +34,7 @@ class AuthenticationController implements Controller {
       validationMiddleware(LogInDto),
       this.login
     );
+    this.router.post(`${this.path}/logout`, this.logout);
   }
 
   registration = async (req: Request, res: Response, next: NextFunction) => {
@@ -72,6 +73,11 @@ class AuthenticationController implements Controller {
         next(new WrongCredentialsException());
       }
     }
+  };
+
+  logout = async (_req: Request, res: Response, _next: NextFunction) => {
+    res.clearCookie("token");
+    res.status(200).send({ status: 200, message: "Logout success!" });
   };
 
   private createCookie(res, data: TokenData) {
