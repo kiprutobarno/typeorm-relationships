@@ -2,12 +2,12 @@ import { Router, Response, Request, NextFunction } from "express";
 import { getRepository } from "typeorm";
 import Post from "../entity/posts";
 import HttpException from "../exceptions/HttpException";
-import validationMiddleware from "../middleware/validation.middleware";
-import CreatePostDto from "./post.dto";
+import validationMiddleware from "../middleware/valdationMiddleware";
+import CreatePostDto from "../dtos/postDto";
 import { V2_BASE_URL } from "../Utils/constants";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
-import authMiddleware from "../middleware/auth.middleware";
-import RequestWithUser from "../interfaces/requestWithUser.interface";
+import authMiddleware from "../middleware/authMiddleware";
+import RequestWithUser from "../interfaces/requestWithUserInterface";
 
 class PostsController {
   public path = `${V2_BASE_URL}/posts`;

@@ -1,11 +1,11 @@
 import { createConnection } from "typeorm";
 import "reflect-metadata";
 import App from "./app";
-import PostsController from "./posts/posts.controller";
-import AuthenticationController from "./authentication/authentication.controller";
-import AddressController from "./addresses/address.controller";
-import UserController from "./users/users.controller";
-import CategoryController from './categories/category.controller';
+import PostsController from "./controllers/postController";
+import AuthenticationController from "./controllers/authController";
+import AddressController from "./controllers/addressController";
+import UserController from "./controllers/userController";
+import CategoryController from './controllers/categoryController';
 
 async function init() {
   try {

@@ -1,8 +1,8 @@
 import express, { Application } from "express";
 import bodyParser from "body-parser";
 import { config } from "./Utils/config";
-import Controller from "./interfaces/controller.interface";
-import errorMiddleware from "./middleware/error.middleware";
+import Controller from "./interfaces/controllerInterface";
+import errorMiddleware from "./middleware/errorMiddleware";
 
 class App {
   public app: Application;

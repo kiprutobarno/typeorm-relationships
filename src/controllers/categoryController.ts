@@ -1,12 +1,12 @@
-import Controller from "interfaces/controller.interface";
+import Controller from "interfaces/controllerInterface";
 import { Router, Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
 import Category from "../entity/category";
 import { V2_BASE_URL } from "../Utils/constants";
-import CreateCategoryDto from "./category.dto";
-import validationMiddleware from "../middleware/validation.middleware";
+import CreateCategoryDto from "../dtos/categoryDto";
+import validationMiddleware from "../middleware/valdationMiddleware";
 import CategoryNotFoundException from "../exceptions/CategoryNotFoundException";
-import authMiddleware from "../middleware/auth.middleware";
+import authMiddleware from "../middleware/authMiddleware";
 
 class CategoryController implements Controller {
   public path = `${V2_BASE_URL}/categories`;
@@ -41,7 +41,6 @@ class CategoryController implements Controller {
       const categories = await this.categoryRepository.find({
         relations: ["posts"]
       });
-      // const categories = await this.categoryRepository.find();
 
       res
         .status(200)
