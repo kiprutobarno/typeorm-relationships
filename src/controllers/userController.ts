@@ -6,20 +6,22 @@ import authMiddleware from "../middleware/authMiddleware";
 import { V2_BASE_URL } from "../Utils/constants";
 import User from "../entity/user";
 import { getRepository } from "typeorm";
+import Post from "../entity/posts";
 
 class UserController implements Controller {
   public path = `${V2_BASE_URL}/users`;
   public router = Router();
   private userRepository = getRepository(User);
+  private postRepository = getRepository(Post);
   constructor() {
     this.initializeRoutes();
   }
   private initializeRoutes() {
-    // this.router.get(
-    //   `${this.path}/:id/posts`,
-    //   authMiddleware,
-    //   this.getUserPosts
-    // );
+    this.router.get(
+      `${this.path}/:id/posts`,
+      authMiddleware,
+      this.getUserPosts
+    );
     this.router.get(this.path, authMiddleware, this.getUsers);
     this.router.get(`${this.path}/:id`, authMiddleware, this.getUser);
   }
@@ -43,19 +45,22 @@ class UserController implements Controller {
     }
   };
 
-  //   getUserPosts = async (
-  //     req: RequestWithUser,
-  //     res: Response,
-  //     next: NextFunction
-  //   ) => {
-  //     const userId = req.params.id;
-  //     if (userId === req.user._id.toString()) {
-  //       const feedback = await this.post.find({ author: userId });
-  //       res.status(200).send({ posts: feedback });
-  //     } else {
-  //       next(new NotAuthorizedException());
-  //     }
-  //   };
+  getUserPosts = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const userId = req.params.id;
+    if (userId === req.user.id.toString()) {
+      const feedback = await this.postRepository.find({
+        where: { author: userId },
+        relations: ["categories"]
+      });
+      res.status(200).send({ posts: feedback });
+    } else {
+      next(new NotAuthorizedException());
+    }
+  };
 }
 
 export default UserController;
