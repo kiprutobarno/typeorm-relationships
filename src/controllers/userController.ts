@@ -22,6 +22,11 @@ class UserController implements Controller {
       authMiddleware,
       this.getUserPosts
     );
+    this.router.get(
+      `${this.path}/:id/posts/:postId`,
+      authMiddleware,
+      this.getUserPost
+    );
     this.router.get(this.path, authMiddleware, this.getUsers);
     this.router.get(`${this.path}/:id`, authMiddleware, this.getUser);
   }
@@ -53,6 +58,24 @@ class UserController implements Controller {
     const userId = req.params.id;
     if (userId === req.user.id.toString()) {
       const feedback = await this.postRepository.find({
+        where: { author: userId },
+        relations: ["categories"]
+      });
+      res.status(200).send({ posts: feedback });
+    } else {
+      next(new NotAuthorizedException());
+    }
+  };
+
+  getUserPost = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const userId = req.params.id;
+    const postId = req.params.postId;
+    if (userId === req.user.id.toString()) {
+      const feedback = await this.postRepository.findOne(postId, {
         where: { author: userId },
         relations: ["categories"]
       });
