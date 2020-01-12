@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from "express";
 import { getRepository } from "typeorm";
-import Controller from "../interfaces/controller.interface";
+import Controller from "../interfaces/controllerInterface";
 import Address from "../entity/address";
 import { V2_BASE_URL } from "../Utils/constants";
 

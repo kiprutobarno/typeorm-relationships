@@ -1,9 +1,8 @@
-import Controller from "../interfaces/controller.interface";
+import Controller from "../interfaces/controllerInterface";
 import { Router, NextFunction, Response, Request } from "express";
-import postModel from "../posts/posts.model";
-import RequestWithUser from "../interfaces/requestWithUser.interface";
+import RequestWithUser from "../interfaces/requestWithUserInterface";
 import NotAuthorizedException from "../exceptions/NotAuthorizedException";
-import authMiddleware from "../middleware/auth.middleware";
+import authMiddleware from "../middleware/authMiddleware";
 import { V2_BASE_URL } from "../Utils/constants";
 import User from "../entity/user";
 import { getRepository } from "typeorm";
